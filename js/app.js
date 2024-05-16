@@ -1,30 +1,66 @@
 const registerButtons = document.querySelectorAll("#register__btn");
 const viewButtons = document.querySelectorAll("#view__btn");
 const titleForRegistrationForm = document.getElementById("event_title").innerText;
+
+
+
 registerButtons.forEach(button => {
     button.addEventListener('click', () => {
         const eventTitle = button.parentNode.querySelector('#register__btn').textContent;
-
-        // Відкрити модальне вікно з формою реєстрації
         openModal(eventTitle);
     });
 });
 
-
 viewButtons.forEach(button => {
-     button.addEventListener('click', () => {
-       const eventTitle = button.parentNode.querySelector('#event_title').textContent;
-       const eventDescription = button.parentNode.querySelector('.event__description').textContent;
-       
-       const participants = [
-         { name: "Іван Петренко", email: "ivan.petrenko@mail.com" },
-         { name: "Олена Сидоренко", email: "olena.sydorov@mail.com" },
-         { name: "Тарас Шевченко", email: "taras.shevchenko@mail.com" }
-       ];
-       openViewModal(eventTitle, eventDescription, participants);
-     });
-   });
+    button.addEventListener('click', function() {
+      const event = this.closest('.event');  
+      if (!event) return;  
+  
+      const eventTitle = event.querySelector('.event__title').textContent;
+      const eventDescription = event.querySelector('.event__description').textContent;
+      const participants = [
+        { name: "Іван Петренко", email: "ivan.petrenko@mail.com" },
+        { name: "Олена Сидоренко", email: "olena.sydorov@mail.com" },
+        { name: "Тарас Шевченко", email: "taras.shevchenko@mail.com" },
+        { name: "Артем Завинський", email: "art.zavynsiy@mail.com" },
+        { name: "Сергій Приходько", email: "serg.prychodko@mail.com" },
+        { name: "Галина Щербина", email: "galyna529@mail.com" }
+      ];
+      openViewModal(eventTitle, eventDescription, participants);
+      
+    });
+  });
 
+
+function openViewModal(eventTitle, eventDescription, participants) {
+  const modalView = document.createElement('div');
+  modalView.classList.add('modal__view');
+
+  const participantList = participants.length === 0 ? "<p>There are no registered participants yet.</p>" : `
+  <div class="participants-container">
+    <h3>Registered Participants</h3>
+    <div class="participants-grid">
+      ${participants.map(participant => `
+        <div class="participant-tile">
+          <p class="participant-name">${participant.name}</p>
+          <p class="participant-email">${participant.email}</p>
+        </div>
+      `).join('')}
+    </div>
+  </div>
+`;
+
+  modalView.innerHTML = `
+    <div class="modal-content view__width">
+      <h2 class="modal-title">${eventTitle}</h2>
+      <p class="event-description">${eventDescription}</p>
+      ${participantList}
+      <button class="modal-close">Close</button>
+    </div>
+  `;
+  
+  document.body.appendChild(modalView); 
+};
 
 function openModal(_eventTitle) {
     const modal = document.createElement('div');
@@ -108,13 +144,18 @@ function openModal(_eventTitle) {
         // Закрити модальнe вікно
         closeModal();
     });
-}
+};
 
 function closeModal() {
     const modal = document.querySelector('.modal');
-    modal.parentNode.removeChild(modal);
-}
-
+    const modalView = document.querySelector('.modal__view');
+    if (modal) {
+        modal.parentNode.removeChild(modal);
+    }
+    if (modalView) {
+        modalView.parentNode.removeChild(modalView);
+    };
+};
 
 
 
